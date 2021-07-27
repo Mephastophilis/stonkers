@@ -1,0 +1,23 @@
+port_goals:
+  VTI: 0.4
+  VGT: 0.1
+  VEA: 0.1
+  VWO: 0.1
+  BND: 0.05
+  MUB: 0.1
+  LQD: 0.025
+  BNDX: 0.025
+  XLE: 0.05
+  GLD: 0.05
+
+port_holds:
+  VTI: 21
+  VGT: 4
+  VEA: 23
+  VWO: 23
+  BND: 6
+  MUB: 8
+  LQD: 2
+  BNDX: 5
+  XLE: 36
+  GLD: 0

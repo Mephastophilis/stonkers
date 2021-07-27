@@ -71,14 +71,17 @@ class stock_portfolio:
     def balance_only_buy(self):
         if not hasattr(self, "dataframe"):
             self.create_dataframe()
+        if 'need_to_buy_or_sell' not in self.dataframe:
+            self.balance_buy_sell()
 
         ticker_min = self.dataframe[
-            self.dataframe.need_to_buy == self.dataframe.need_to_buy.min()
+            self.dataframe.need_to_buy_or_sell == self.dataframe.need_to_buy_or_sell.min()
         ].ticker.values
-        min_buy_val = self.dataframe.need_to_buy.min()
         df_ = self.dataframe[self.dataframe.ticker == ticker_min[0]]
         goal_portfolio_value = (df_.holdings_value / df_.goal_percentage).values[0]
-        print(goal_portfolio_value, self.dataframe.holdings_value.sum())
+        print("Current total portfolio value:", self.dataframe.holdings_value.sum())
+        print("Necessary Portfolio value to rebalance with only buying:", goal_portfolio_value)
+        print("Required Cash Money:", round(goal_portfolio_value- self.dataframe.holdings_value.sum(),2))
         self.dataframe["need_to_buy"] = round(
             (
                 goal_portfolio_value * self.dataframe.goal_percentage
@@ -88,7 +91,7 @@ class stock_portfolio:
             4,
         )
 
-    def display_df(self):
+    def display_df(self, to_markdown=False):
         self.balance_buy_sell()
         df_ = self.dataframe
         df_["goal_percentage"] = df_.goal_percentage.apply(
@@ -97,5 +100,9 @@ class stock_portfolio:
         df_["holding_percentage"] = df_.holding_percentage.apply(
             lambda x: "{:.4}%".format(str(x * 100))
         )
+        if to_markdown:
+            print(df_[self.cols + ["need_to_buy_or_sell"]].to_markdown(index=False))
+        else:
+            print(df_[self.cols + ["need_to_buy_or_sell"]])
 
-        print(df_[self.cols + ["need_to_buy_or_sell"]].to_markdown())
+

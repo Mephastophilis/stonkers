@@ -29,7 +29,7 @@ Current total portfolio value: 9376.4
 Necessary Portfolio value to rebalance with only buying: 9944.0
 Required Cash Money: 567.6
 ```
-Stonkers has an internal dataframe that keeps track of your portfolio the calculated values used to determine which stocks to buy and how much. You can always call the current state of your portfolio's dataframe as an attribute.
+Stonkers has an internal dataframe that keeps track of your portfolio and the calculated values used to determine which stocks to buy and how much. You can always call the current state of your portfolio's dataframe as an attribute.
 ```
 chadfolio.dataframe[['ticker', 'need_to_buy']]
 ```

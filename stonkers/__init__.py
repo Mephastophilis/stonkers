@@ -61,14 +61,16 @@ class stock_portfolio:
             self.dataframe.holdings_value / self.dataframe.holdings_value.sum()
         )
 
-    def balance_buy_sell(self):
+    def balance_buy_sell(self, verbose=True):
         if not hasattr(self, "dataframe"):
             self.create_dataframe()
+        if verbose:
+            print("Current total portfolio value:", self.dataframe.holdings_value.sum())
         self.dataframe["need_to_buy_or_sell"] = round(
             self.dataframe.holding_value_diff / self.dataframe.stock_price, 4
         )
 
-    def balance_only_buy(self):
+    def balance_only_buy(self, verbose=True):
         if not hasattr(self, "dataframe"):
             self.create_dataframe()
         if 'need_to_buy_or_sell' not in self.dataframe:
@@ -79,9 +81,10 @@ class stock_portfolio:
         ].ticker.values
         df_ = self.dataframe[self.dataframe.ticker == ticker_min[0]]
         goal_portfolio_value = (df_.holdings_value / df_.goal_percentage).values[0]
-        print("Current total portfolio value:", self.dataframe.holdings_value.sum())
-        print("Necessary Portfolio value to rebalance with only buying:", goal_portfolio_value)
-        print("Required Cash Money:", round(goal_portfolio_value- self.dataframe.holdings_value.sum(),2))
+        if verbose:
+            print("Current total portfolio value:", self.dataframe.holdings_value.sum())
+            print("Necessary Portfolio value to rebalance with only buying:", goal_portfolio_value)
+            print("Required Cash Money:", round(goal_portfolio_value- self.dataframe.holdings_value.sum(),2))
         self.dataframe["need_to_buy"] = round(
             (
                 goal_portfolio_value * self.dataframe.goal_percentage

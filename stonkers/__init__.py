@@ -21,8 +21,11 @@ class stock_portfolio:
             "ticker",
             "goal_percentage",
             "holding_percentage",
+            "holdings",
             "stock_price",
             "holdings_value",
+            "goal_holding_value",
+            "holding_value_diff",
         ]
 
     def add_holding(self, ticker, amount):
@@ -95,4 +98,4 @@ class stock_portfolio:
             lambda x: "{:.4}%".format(str(x * 100))
         )
 
-        print(df_[self.cols + ["need_to_buy_or_sell"]])
+        print(df_[self.cols + ["need_to_buy_or_sell"]].to_markdown())

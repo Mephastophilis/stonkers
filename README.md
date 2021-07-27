@@ -1,6 +1,6 @@
 # STONKERS!!!!!
 
-Welcome to stonkers. A python library that builds stock portfolio classes to help with portfolio management. Stonkers creates a stock_portfolio Class which can read in stock tickers holdings and portfolio percentage goals. It will then pull in the latest stock prices to calculate how balanced your portfolio is and how you need to buy/sell of your stocks in order to rebalance the portfolio.
+Welcome to stonkers. A python library that helps with stock portfolio management. Stonkers creates a stock_portfolio Class which can read in stock tickers holdings and portfolio percentage goals from .yaml files. You can also manually add your stocks holdings and goal percentages as well. It will then pull in the latest stock prices to calculate how balanced your portfolio is and how you need to buy/sell of your stocks in order to rebalance the portfolio.
 
 
 

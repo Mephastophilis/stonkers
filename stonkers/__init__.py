@@ -25,6 +25,7 @@ class stock_portfolio:
             "stock_price",
             "holding_value_diff",
             "need_to_buy_or_sell",
+            "need_to_buy",
         ]
 
     def add_holding(self, ticker, amount):
@@ -67,6 +68,7 @@ class stock_portfolio:
             self.goal_holding_value = {}
             self.holding_value_diff = {}
             self.holding_percentage = {}
+            self.holding_value_diff_scaled = {}
             for ticker in self.goal_percentage.keys():
                 self.holdings_value[ticker] = round(
                     self.stock_price[ticker] * self.holdings[ticker], 2
@@ -85,6 +87,7 @@ class stock_portfolio:
                 self.holding_percentage[ticker] = (
                     self.holdings_value[ticker] / self.total_portfolio_value
                 )
+                self.holding_value_diff_scaled[ticker] = self.holding_value_diff[ticker]/self.goal_percentage[ticker]
 
     def balance_portfolio(self, verbose=True):
         self.calculate_portfolio_stats()
@@ -95,7 +98,8 @@ class stock_portfolio:
             )
 
         self.need_to_buy = {}
-        ticker_min = min(self.holding_value_diff, key=self.holding_value_diff.get)
+        self.test = {}
+        ticker_min = min(self.holding_value_diff_scaled, key=self.holding_value_diff_scaled.get)
         self.goal_portfolio_value = round(
             self.holdings_value[ticker_min] / self.goal_percentage[ticker_min], 2
         )
@@ -107,7 +111,7 @@ class stock_portfolio:
             )
             print(
                 "Required Cash Money:",
-                self.goal_portfolio_value - self.total_portfolio_value,
+                round(self.goal_portfolio_value - self.total_portfolio_value, 2)
             )
         for ticker in self.goal_percentage.keys():
             self.need_to_buy[ticker] = round(
@@ -132,6 +136,7 @@ class stock_portfolio:
                 "holdings_value": self.holdings_value.values(),
                 "goal_holding_value": self.goal_holding_value.values(),
                 "holding_value_diff": self.holding_value_diff.values(),
+                "holding_value_diff_scaled": self.holding_value_diff_scaled.values(),
                 "need_to_buy_or_sell": self.need_to_buy_or_sell.values(),
                 "need_to_buy": self.need_to_buy.values(),
             }
@@ -148,9 +153,9 @@ class stock_portfolio:
         if not hasattr(self, "dataframe"):
             self.create_dataframe()
         if to_markdown:
-            print(self.dataframe.to_markdown(index=False))
+            print(self.dataframe[self.cols].to_markdown(index=False))
         else:
-            return self.dataframe
+            return self.dataframe[self.cols]
 
     def stock_buy_advisor(self, buying_cash):
         """Tells you which stocks to buy bash on available cash and the
@@ -158,12 +163,13 @@ class stock_portfolio:
         """
         if not hasattr(self, "need_to_buy_or_sell"):
             self.balance_portfolio()
+        print(f"Attempting to buy stocks with ${buying_cash}")
         allocating_invest_chunk = True
         self.buy_counter = Counter()
 
         while allocating_invest_chunk:
             next_stonk_buy = max(
-                self.holding_value_diff, key=self.holding_value_diff.get
+                self.holding_value_diff_scaled, key=self.holding_value_diff_scaled.get
             )
             if buying_cash < self.stock_price[next_stonk_buy]:
                 allocating_invest_chunk = False

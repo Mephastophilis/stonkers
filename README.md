@@ -42,7 +42,7 @@ chadfolio.dataframe[['ticker', 'need_to_buy']]
 | LAND     |          5.87 |
 | XLE      |          0    |
 
-Let's say you have $1000 to invest in your `chadfolio` portfolio. The `stock_buy_advisor` method will take an input chunk of money and return a Counter with all the stock tickers and amount to buy. The calculation looks at which stock has the greatest `holding_value_diff`, adds it to the holdings, subtracts the cost from the `buying_cash`, and then recalculates the portfolio distributions. It keeps doing this process until there is not enough money left to buy the stock with the greatest `holding_value_diff`.
+Let's say you have $1000 to invest in your `chadfolio` portfolio. The `stock_buy_advisor` method will take an input chunk of money and return a Counter with all the stock tickers and amount to buy. The calculation looks at which stock has the greatest `holding_value_diff`, adds it to the holdings, subtracts the cost from the `buying_cash`, and then recalculates the portfolio distributions. It keeps doing this process until there is not enough money left to buy the stock with the greatest `holding_value_diff_scaled`. It is the difference between the stocks value and the goal stock value which is then scaled by the goal percentage of that stock. 
 ```
 chadfolio.stock_buy_advisor(1000)
 Attempting to buy stocks with $1000

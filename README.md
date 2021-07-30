@@ -1,9 +1,8 @@
 # STONKERS!!!!!
 
-Welcome to stonkers. A python library that helps with stock portfolio management. Stonkers creates a stock_portfolio class which can read in stock holdings and portfolio percentage goals from a .yaml file. These holdings and goal percentages can be manually added as well to a instance. Stonkers then has built in functionality to pull the latest stock prices for each ticker to calculate the current distribution of your portfolio. Finally it will calculate how much you need to buy/sell of your stocks in order to rebalance your portfolio.
+Welcome to stonkers. A python library that helps with stock portfolio management. Stonkers creates a stock_portfolio class which can read in stock holdings and portfolio percentage goals from a .yaml file or the holdings and goal percentages can be manually added to the portfolio instance. Stonkers then has built in functionality to pull the latest stock prices for each ticker to calculate the current distribution of your portfolio. It is able to calculate how many stocks to buy or sell in order to balance the portfolio. Or it can tell you how many stocks to simply buy, because you're never selling! Finally, it has the functionality to take an input sum of money and tell you which stocks to buy in order to best distribute the cash across your portfolio in accordance with your goal percentages.
 
 The goal to provide a helpful tool that can enable your investment strategy. Stonkers can advise you which stocks to buy first when the money transfers to your investment account. A well balanced portfolio will keep the returns flowing in while managing your risk. The stock portfolio percentages in `stonkers.demo_portfolio.yml` are based on the modern portfolio theory outlined in Wealthfront's white paper. Read more about it here: https://research.wealthfront.com/whitepapers/investment-methodology/
-
 
 
 ## Demo:
@@ -22,7 +21,7 @@ chadfolio.add_goal_percent("TQQQ", 0.6)
 chadfolio.add_goal_percent("LAND", 0.2)
 chadfolio.add_goal_percent("XLE", 0.2)
 ```
-Maybe you are never selling(!) so you only want to buy more stocks in order to rebalance the portfolio. Use the `balance_only_buy` method.
+You can then determine how far off you are from your goal percentges based on your holdings and the current stock price. Use the `balance_portfolio` method to produce the `need_to_buy_or_sell` and `need_to_buy` attributes that represent how many stock units you are away from your goal percentages.
 ```
 chadfolio.balance_portfolio()
 Current total portfolio value: 11438.0

@@ -87,7 +87,9 @@ class stock_portfolio:
                 self.holding_percentage[ticker] = (
                     self.holdings_value[ticker] / self.total_portfolio_value
                 )
-                self.holding_value_diff_scaled[ticker] = self.holding_value_diff[ticker]/self.goal_percentage[ticker]
+                self.holding_value_diff_scaled[ticker] = (
+                    self.holding_value_diff[ticker] / self.goal_percentage[ticker]
+                )
 
     def balance_portfolio(self, verbose=True):
         self.calculate_portfolio_stats()
@@ -99,7 +101,9 @@ class stock_portfolio:
 
         self.need_to_buy = {}
         self.test = {}
-        ticker_min = min(self.holding_value_diff_scaled, key=self.holding_value_diff_scaled.get)
+        ticker_min = min(
+            self.holding_value_diff_scaled, key=self.holding_value_diff_scaled.get
+        )
         self.goal_portfolio_value = round(
             self.holdings_value[ticker_min] / self.goal_percentage[ticker_min], 2
         )
@@ -111,7 +115,7 @@ class stock_portfolio:
             )
             print(
                 "Required Cash Money:",
-                round(self.goal_portfolio_value - self.total_portfolio_value, 2)
+                round(self.goal_portfolio_value - self.total_portfolio_value, 2),
             )
         for ticker in self.goal_percentage.keys():
             self.need_to_buy[ticker] = round(

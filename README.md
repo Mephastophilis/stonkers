@@ -85,6 +85,9 @@ Counter({'VWO': 3, 'MUB': 2, 'GLD': 1, 'LQD': 1, 'BNDX': 1, 'VEA': 1})
 Demo done!
 ```
 
+### empty_portfolio_demo.py
+Similar to the `stonkers_demo.py`, but this demo loads the `demo_portfolio.yml` and converts the hodlings to zero for all the stocks. Then it runs the `stock_buy_advisor` method on the empty portfolio. This simulates what stocks one would buy with an inital investment of $3000 based on the investment goals set out in `demo_portfolio.yml`.
+
 ## Future Work:
 - Add historical strategy calculations: e.g. How much money would your strategy yield over the last year if you were investing $1000 and rebalancing the portfolio once a month.
 - Add plotting functionality:

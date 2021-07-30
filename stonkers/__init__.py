@@ -133,7 +133,7 @@ class stock_portfolio:
         self.buy_counter = Counter()
 
         while allocating_invest_chunk:
-            next_stonk_buy = max(self.need_to_buy_or_sell, key=self.need_to_buy_or_sell.get)
+            next_stonk_buy = max(self.holding_value_diff, key=self.holding_value_diff.get)
             if buying_money < self.stock_price[next_stonk_buy]:
                 allocating_invest_chunk = False
                 break

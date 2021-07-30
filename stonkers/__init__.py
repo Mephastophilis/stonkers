@@ -98,89 +98,31 @@ class stock_portfolio:
             )
 
     def create_dataframe(self):
-        self.dataframe = pd.DataFrame( data={'ticker': self.goal_percentage.keys(),
+        if not hasattr(self, "need_to_buy_or_sell"):
+            self.balance_portfolio()
+        self.dataframe = pd.DataFrame(data={'ticker': self.goal_percentage.keys(),
                                              'goal_percentage': self.goal_percentage.values(),
                                              'holding_percentage': self.holding_percentage.values(),
                                              'holdings': self.holdings.values(),
-                                             'stock_price': self.stock_price.values()
+                                             'stock_price': self.stock_price.values(),
                                              'holdings_value': self.holdings_value.values(),
                                              'goal_holding_value': self.goal_holding_value.values(),
                                              'holding_value_diff': self.holding_value_diff.values(),
                                              'need_to_buy_or_sell': self.need_to_buy_or_sell.values(),
                                              'need_to_buy': self.need_to_buy.values(),
                                              } )
-
-
-
-    def create_dataframe(self):
-        self.dataframe = pd.DataFrame(
-            data={
-                "ticker": self.holding_percentage.keys(),
-                "goal_percentage": self.holding_percentage.values(),
-                "holdings": self.holdings.values(),
-            }
+        # convert percentage columns into readable strings
+        self.dataframe["goal_percentage"] = self.dataframe.goal_percentage.apply(
+            lambda x: "{:.4}%".format(str(x * 100))
         )
-        self.dataframe["stock_price"] = round(
-            self.dataframe.apply(lambda x: si.get_live_price(x.ticker), axis=1), 2
-        )
-        self.dataframe["holdings_value"] = round(
-            self.dataframe.stock_price * self.dataframe.holdings, 2
-        )
-        self.dataframe["goal_holding_value"] = round(
-            self.dataframe.goal_percentage * self.dataframe.holdings_value.sum(), 2
-        )
-        self.dataframe["holding_value_diff"] = (
-            self.dataframe.goal_holding_value - self.dataframe.holdings_value
-        )
-        self.dataframe["holding_percentage"] = (
-            self.dataframe.holdings_value / self.dataframe.holdings_value.sum()
-        )
-
-    def balance_buy_sell(self, verbose=True):
-        if not hasattr(self, "dataframe"):
-            self.create_dataframe()
-        if verbose:
-            print("Current total portfolio value:", self.dataframe.holdings_value.sum())
-        self.dataframe["need_to_buy_or_sell"] = round(
-            self.dataframe.holding_value_diff / self.dataframe.stock_price, 4
-        )
-
-    def balance_only_buy(self, verbose=True):
-        if not hasattr(self, "dataframe"):
-            self.create_dataframe()
-        if 'need_to_buy_or_sell' not in self.dataframe:
-            self.balance_buy_sell()
-
-        ticker_min = self.dataframe[
-            self.dataframe.need_to_buy_or_sell == self.dataframe.need_to_buy_or_sell.min()
-        ].ticker.values
-        df_ = self.dataframe[self.dataframe.ticker == ticker_min[0]]
-        goal_portfolio_value = (df_.holdings_value / df_.goal_percentage).values[0]
-        if verbose:
-            print("Current total portfolio value:", self.dataframe.holdings_value.sum())
-            print("Necessary Portfolio value to rebalance with only buying:", goal_portfolio_value)
-            print("Required Cash Money:", round(goal_portfolio_value- self.dataframe.holdings_value.sum(),2))
-        self.dataframe["need_to_buy"] = round(
-            (
-                goal_portfolio_value * self.dataframe.goal_percentage
-                - self.dataframe.holdings_value
-            )
-            / self.dataframe.stock_price,
-            4,
+        self.dataframe["holding_percentage"] = self.dataframe.holding_percentage.apply(
+            lambda x: "{:.4}%".format(str(x * 100))
         )
 
     def display_df(self, to_markdown=False):
-        self.balance_buy_sell()
-        df_ = self.dataframe
-        df_["goal_percentage"] = df_.goal_percentage.apply(
-            lambda x: "{:.4}%".format(str(x * 100))
-        )
-        df_["holding_percentage"] = df_.holding_percentage.apply(
-            lambda x: "{:.4}%".format(str(x * 100))
-        )
+        if not hasattr(self, "dataframe"):
+            self.create_dataframe()
         if to_markdown:
-            print(df_[self.cols + ["need_to_buy_or_sell"]].to_markdown(index=False))
+            print(self.dataframe.to_markdown(index=False))
         else:
-            print(df_[self.cols + ["need_to_buy_or_sell"]])
-
-
+            print(self.dataframe)

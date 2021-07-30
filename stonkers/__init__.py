@@ -1,4 +1,5 @@
 import yaml
+from collections import Counter
 import pandas as pd
 import numpy as np
 from yahoo_fin import stock_info as si
@@ -125,4 +126,23 @@ class stock_portfolio:
         if to_markdown:
             print(self.dataframe.to_markdown(index=False))
         else:
-            print(self.dataframe)
+            return self.dataframe
+
+    def invest_chunk(self, buying_money=1000):  
+        allocating_invest_chunk = True 
+        self.buy_counter = Counter()
+
+        while allocating_invest_chunk:
+            next_stonk_buy = max(self.need_to_buy_or_sell, key=self.need_to_buy_or_sell.get)
+            if buying_money < self.stock_price[next_stonk_buy]:
+                allocating_invest_chunk = False
+                break
+            else:
+                buying_money -= self.stock_price[next_stonk_buy]
+                self.buy_counter[next_stonk_buy]+=1
+                self.add_holding(next_stonk_buy, self.holdings[next_stonk_buy]+1)
+                self.balance_portfolio(verbose=False)
+        self.create_dataframe()
+        print("Leftover cash:", buying_money)
+        print(self.buy_counter)
+

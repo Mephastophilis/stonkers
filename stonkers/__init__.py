@@ -128,21 +128,24 @@ class stock_portfolio:
         else:
             return self.dataframe
 
-    def invest_chunk(self, buying_money=1000):  
+    def stock_buy_advisor(self, buying_cash):
+        """Tells you which stocks to buy bash on available cash and the
+        current balance of your porttfolio.
+        """ 
         allocating_invest_chunk = True 
         self.buy_counter = Counter()
 
         while allocating_invest_chunk:
             next_stonk_buy = max(self.holding_value_diff, key=self.holding_value_diff.get)
-            if buying_money < self.stock_price[next_stonk_buy]:
+            if buying_cash < self.stock_price[next_stonk_buy]:
                 allocating_invest_chunk = False
                 break
             else:
-                buying_money -= self.stock_price[next_stonk_buy]
+                buying_cash -= self.stock_price[next_stonk_buy]
                 self.buy_counter[next_stonk_buy]+=1
                 self.add_holding(next_stonk_buy, self.holdings[next_stonk_buy]+1)
                 self.balance_portfolio(verbose=False)
         self.create_dataframe()
-        print("Leftover cash:", buying_money)
+        print("Leftover cash:", buying_cash)
         print(self.buy_counter)
 

@@ -20,11 +20,11 @@ class stock_portfolio:
         self.cols = [
             "ticker",
             "goal_percentage",
+            "holding_percentage",
             "holdings",
             "stock_price",
-            "holdings_value",
-            "goal_holding_value",
             "holding_value_diff",
+            "need_to_buy_or_sell",
         ]
 
     def add_holding(self, ticker, amount):
@@ -62,7 +62,7 @@ class stock_portfolio:
         else:
             if not hasattr(self, "stock_price"):
                 self.pull_stock_prices()
-
+            
             self.holdings_value = {}
             self.goal_holding_value = {}
             self.holding_value_diff = {}
@@ -71,40 +71,44 @@ class stock_portfolio:
                 self.holdings_value[ticker] = round(
                     self.stock_price[ticker] * self.holdings[ticker], 2
                 )
+            self.total_portfolio_value = round(sum(self.holdings_value.values()),2)
+
             for ticker in self.goal_percentage.keys():
+
+
                 self.goal_holding_value[ticker] = round(
-                    self.goal_percentage[ticker] * (sum(self.holdings_value.values())),
+                    self.goal_percentage[ticker] * self.total_portfolio_value,
                     2,
                 )
                 self.holding_value_diff[ticker] = (
                     self.goal_holding_value[ticker] - self.holdings_value[ticker]
                 )
-                self.holding_percentage[ticker] = self.holdings_value[ticker] / sum(
-                    self.holdings_value.values()
-                )
+                self.holding_percentage[ticker] = self.holdings_value[ticker] / self.total_portfolio_value
+                
+            
 
     def balance_portfolio(self, verbose=True):
         self.calculate_portfolio_stats()
         self.need_to_buy_or_sell = {}
         for ticker in self.goal_percentage.keys():
             self.need_to_buy_or_sell[ticker] = round(
-                self.holding_value_diff[ticker] / self.stock_price[ticker], 4
+                self.holding_value_diff[ticker] / self.stock_price[ticker], 2
             )
 
         self.need_to_buy = {}
-        ticker_min = min(self.need_to_buy_or_sell, key=self.need_to_buy_or_sell.get)
-        self.goal_portfolio_value = (
-            self.holdings_value[ticker_min] / self.goal_percentage[ticker_min]
+        ticker_min = min(self.holding_value_diff, key=self.holding_value_diff.get)
+        self.goal_portfolio_value = (round(
+            self.holdings_value[ticker_min] / self.goal_percentage[ticker_min], 2)
         )
         if verbose:
-            print("Current total portfolio value:", sum(self.holdings_value.values()))
+            print("Current total portfolio value:", self.total_portfolio_value)
             print(
                 "Necessary Portfolio value to rebalance with only buying:",
                 self.goal_portfolio_value,
             )
             print(
                 "Required Cash Money:",
-                round(self.goal_portfolio_value - sum(self.holdings_value.values()), 2),
+                self.goal_portfolio_value - self.total_portfolio_value,
             )
         for ticker in self.goal_percentage.keys():
             self.need_to_buy[ticker] = round(
@@ -113,7 +117,7 @@ class stock_portfolio:
                     - self.holdings_value[ticker]
                 )
                 / self.stock_price[ticker],
-                4,
+                2,
             )
 
     def create_dataframe(self):

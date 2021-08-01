@@ -33,6 +33,7 @@ Stonkers keeps track of the portfolio calculated values with dictionaries as att
 chadfolio.create_dataframe()
 ```
  You can always call the current state of your portfolio's dataframe as an attribute.
+
 ```
 chadfolio.dataframe[['ticker', 'need_to_buy']]
 ```

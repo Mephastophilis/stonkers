@@ -11,13 +11,13 @@ port_goals:
   GLD: 0.05
 
 port_holds:
-  VTI: 21
+  VTI: 23
   VGT: 4
-  VEA: 23
+  VEA: 25
   VWO: 23
-  BND: 6
-  MUB: 8
+  BND: 8
+  MUB: 10
   LQD: 2
   BNDX: 5
-  XLE: 36
-  GLD: 0
+  XLE: 16
+  GLD: 3

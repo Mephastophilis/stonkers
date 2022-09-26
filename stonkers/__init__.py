@@ -3,9 +3,114 @@ from collections import Counter
 import pandas as pd
 import numpy as np
 from yahoo_fin import stock_info as si
+from stonkers.data_models import Portfolio, PortfolioHolding
 
 
 class stock_portfolio:
+    """Stock Portfolio Class"""
+
+    def __init__(self, portfolio_model: Portfolio = None):
+        if portfolio_model:
+            self.portfolio = portfolio_model
+        else:
+            self.portfolio = None
+
+    def check_percent_holdings(self, autobalance=False):
+        total = sum([holding.target_percentage for holding in self.portfolio.holdings])
+        if np.isclose(total, 1):
+            print("Balanced")
+        if total > 1:
+            raise ValueError("Target percetnages sum to greater than one")
+        if total < 1:
+            raise ValueError("Target percentages sum is less than one")
+
+        if auto_balance:
+            print("AutoBalancing")
+            for holding in self.portfolio.holdings:
+                holding.target_percentage = holding.target_percentage / total
+
+    def add_or_modify_holding(self, ticker, target_percentage, shares):
+        new_holding = PortfolioHolding(
+            ticker=ticker, target_percentage=target_percentage, shares=shares
+        )
+        self.portfolio.holdings[ticker] = new_holding
+
+    def add_one_share(self, ticker):
+        self.portfolio.holdings[ticker].shares += 1
+
+    def pull_stock_prices(self):
+        for ticker_, holding in self.portfolio.holdings.items():
+            stock_price = si.get_live_price(ticker_)
+            self.portfolio.holdings[ticker_].price = stock_price
+
+    def calculate_portfolio_stats(self):
+        if None in [
+            holding_.price for ticker_, holding_ in self.portfolio.holdings.items()
+        ]:
+            self.pull_stock_prices()
+        total_portfolio_value_ = sum(
+            [
+                holding.shares * holding.price
+                for _, holding in self.portfolio.holdings.items()
+            ]
+        )
+        self.total_portfolio_value = total_portfolio_value_
+        for ticker_, holding in self.portfolio.holdings.items():
+            equity_ = holding.price * holding.shares
+            target_percentage_ = holding.target_percentage
+            equity_target_difference_ = (
+                total_portfolio_value_ * target_percentage_ - equity_
+            )
+            price_ = holding.price
+            target_percentage_ = holding.target_percentage
+
+            self.portfolio.holdings[ticker_].equity = equity_
+            self.portfolio.holdings[ticker_].portfolio_percentage = (
+                equity_ / total_portfolio_value_
+            )
+            self.portfolio.holdings[
+                ticker_
+            ].equity_target_difference = equity_target_difference_
+            self.portfolio.holdings[ticker_].number_of_shares_off_target = (
+                equity_target_difference_ / price_
+            )
+            self.portfolio.holdings[ticker_].equity_target_difference_scaled = (
+                equity_target_difference_ / target_percentage_
+            )
+
+    def stock_buy_advisor(self, investment_dollars):
+        """Tells you which stocks to buy bash on available cash and the
+        current balance of your porttfolio.
+        """
+        self.calculate_portfolio_stats()
+        print(f"Attempting to buy stocks with ${investment_dollars}")
+
+        allocating_investments = True
+        self.buy_counter = Counter()
+
+        while allocating_investments:
+
+            next_stonk_to_buy_ = max(
+                [
+                    (holding.equity_target_difference_scaled, holding.ticker)
+                    for holding in self.portfolio.holdings.values()
+                ]
+            )[1]
+            price_of_stonk_ = self.portfolio.holdings[next_stonk_to_buy_].price
+
+            if investment_dollars < price_of_stonk_:
+                allocating_investments = False
+            else:
+                investment_dollars -= price_of_stonk_
+                self.buy_counter[next_stonk_to_buy_] += 1
+                self.add_one_share(next_stonk_to_buy_)
+                self.calculate_portfolio_stats()
+
+        print("Leftover cash:", investment_dollars)
+        print(self.buy_counter)
+
+
+class stock_portfolio_old:
     """Stock Portfolio Class"""
 
     def __init__(self, portfolio_filename=None):
@@ -158,7 +263,7 @@ class stock_portfolio:
         else:
             return self.dataframe[self.cols]
 
-    def stock_buy_advisor(self, buying_cash):
+    def stock_buy_advisor(self, buying_cash: float):
         """Tells you which stocks to buy bash on available cash and the
         current balance of your porttfolio.
         """

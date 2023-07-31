@@ -12,8 +12,13 @@ class stock_portfolio:
     def __init__(self, portfolio_model: Portfolio = None):
         if portfolio_model:
             self.portfolio = portfolio_model
+            self.pull_stock_prices()
+            self.calculate_portfolio_stats()
         else:
             self.portfolio = None
+
+    def display_df(self):
+        display(pd.DataFrame(self.portfolio.dict()['holdings']))
 
     def check_percent_holdings(self, autobalance=False):
         total = sum([holding.target_percentage for holding in self.portfolio.holdings])

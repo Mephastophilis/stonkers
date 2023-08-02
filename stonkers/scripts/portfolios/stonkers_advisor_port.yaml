@@ -1,0 +1,22 @@
+port_goals:
+  BND: 0.075
+  BNDX: 0.025
+  MUB: 0.1
+  SGOL: 0.04
+  SGOV: 0.12
+  VEA: 0.085
+  VGT: 0.05
+  VTI: 0.38
+  VWO: 0.085
+  XLE: 0.04
+port_holds:
+  BND: 0
+  BNDX: 0
+  MUB: 0
+  SGOL: 0
+  SGOV: 0
+  VEA: 0
+  VGT: 0
+  VTI: 0
+  VWO: 0
+  XLE: 0

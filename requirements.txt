@@ -2,3 +2,4 @@ pyyaml
 pandas
 numpy
 yahoo_fin
+tabulate

@@ -2,27 +2,22 @@ import yaml
 from stonkers import stock_portfolio
 
 portfolio_filename = "portfolios/stonkers_advisor_port.yaml"
-
 portfolio = stock_portfolio(portfolio_filename=portfolio_filename)
-
 portfolio.check_percent_holdings()
 
 print("Current Portfolio")
 portfolio.display_df(to_markdown=True)
 print()
 
-
 print("How much money are you going to invest?")
 investment_amount = float(input())
 print(f"Calculating stocks to but with {investment_amount}")
-
 portfolio.stock_buy_advisor(investment_amount)
 
 print("\nNew portfolio after buying")
 portfolio.display_df(to_markdown=True)
 
 print("Are you going to buy these stocks? Enter 1 to update porfolio holdings.")
-
 decision = input()
 if decision == "1":
     output_dict = {

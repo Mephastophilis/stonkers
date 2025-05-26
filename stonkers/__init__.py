@@ -2,7 +2,7 @@ import yaml
 from collections import Counter
 import pandas as pd
 import numpy as np
-from yahoo_fin import stock_info as si
+import yfinance as yf
 
 
 class stock_portfolio:
@@ -50,7 +50,7 @@ class stock_portfolio:
 
     def pull_stock_prices(self):
         self.stock_price = {
-            t: si.get_live_price(t) for t in self.goal_percentage.keys()
+            t: yf.Ticker(t).fast_info['lastPrice'] for t in self.goal_percentage.keys()
         }
 
     def calculate_portfolio_stats(self):
